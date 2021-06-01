@@ -338,3 +338,12 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+/Backup
+/bin
+/Modified
+/obj
+/old
+/oldCode
+/packages
+/新建文件夹
