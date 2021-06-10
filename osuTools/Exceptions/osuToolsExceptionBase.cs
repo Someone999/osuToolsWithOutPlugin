@@ -5,13 +5,13 @@ namespace osuTools.Exceptions
     /// <summary>
         ///     osuTools异常的基类
         /// </summary>
-        public class OsuToolsExceptionBase : Exception
+        public class osuToolsExceptionBase : Exception
         {
             /// <summary>
             ///     使用指定的信息初始化一个osuToolsExceptionBase
             /// </summary>
             /// <param name="msg">信息</param>
-            public OsuToolsExceptionBase(string msg) : base(msg)
+            public osuToolsExceptionBase(string msg) : base(msg)
             {
             }
 
@@ -20,7 +20,7 @@ namespace osuTools.Exceptions
             /// </summary>
             /// <param name="msg"></param>
             /// <param name="innerException"></param>
-            public OsuToolsExceptionBase(string msg, Exception innerException) : base(msg, innerException)
+            public osuToolsExceptionBase(string msg, Exception innerException) : base(msg, innerException)
             {
             }
         }

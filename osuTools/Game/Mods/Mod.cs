@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using osuTools.Beatmaps;
@@ -11,6 +13,36 @@ namespace osuTools.Game.Mods
     /// </summary>
     public abstract class Mod
     {
+        private static IReadOnlyDictionary<OsuGameMod, Mod> _legacyMods;
+        /// <summary>
+        /// <seealso cref="OsuGameMod"/>与<seealso cref="Mod"/>的键值对
+        /// </summary>
+        public static IReadOnlyDictionary<OsuGameMod, Mod> LegacyMods
+        {
+            get
+            {
+                if (_legacyMods is null)
+                {
+                    Dictionary<OsuGameMod, Mod> legacyMods = new Dictionary<OsuGameMod, Mod>();
+                    Assembly asm = typeof(Mod).Assembly;
+                    var types = asm.GetTypes();
+                    foreach (var type in types)
+                    {
+                        var interfaces = type.GetInterfaces();
+                        if (interfaces.Any(i => i == typeof(ILegacyMod)))
+                        {
+                            var legacyMod = type.GetConstructor(new Type[0])?.Invoke(new object[0]) as ILegacyMod;
+                            Mod m = legacyMod as Mod;
+                            if (!(legacyMod is null))
+                                legacyMods.Add(legacyMod.LegacyMod, m ?? throw new InvalidCastException());
+                        }
+                    }
+                    _legacyMods = new ReadOnlyDictionary<OsuGameMod, Mod>(legacyMods);
+                }
+                return _legacyMods;
+            }
+        }
+
         /// <summary>
         ///     所有模式公用的可用Mod
         /// </summary>
@@ -106,20 +138,8 @@ namespace osuTools.Game.Mods
         /// </summary>
         /// <param name="legacyMod"></param>
         /// <returns></returns>
-        public static Mod FromLegacyMod(OsuGameMod legacyMod)
-        {
-            var asm = Assembly.GetExecutingAssembly();
-            var types = asm.GetTypes();
-            foreach (var type in types)
-                if (type.GetInterfaces().Any(i => i == typeof(ILegacyMod)))
-                {
-                    var mod = (ILegacyMod) type.GetConstructor(new Type[0])?.Invoke(new object[0]);
-                    if (legacyMod == mod?.LegacyMod)
-                        return (Mod) mod;
-                }
+        public static Mod FromLegacyMod(OsuGameMod legacyMod) => LegacyMods[legacyMod];
 
-            return null;
-        }
         /// <summary>
         /// 比较两个Mod是否相等
         /// </summary>
