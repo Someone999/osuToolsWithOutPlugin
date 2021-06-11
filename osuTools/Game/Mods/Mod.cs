@@ -84,12 +84,12 @@ namespace osuTools.Game.Mods
         /// <summary>
         ///     Mod的名字
         /// </summary>
-        public virtual string Name { get; protected set; } = "";
+        public virtual string Name { get;  } = "";
 
         /// <summary>
         ///     Mod的短名称
         /// </summary>
-        public virtual string ShortName { get; protected set; } = "";
+        public virtual string ShortName { get; } = "";
 
         /// <summary>
         ///     Mod对分数的影响
@@ -99,7 +99,7 @@ namespace osuTools.Game.Mods
         /// <summary>
         ///     Mod的类型
         /// </summary>
-        public virtual ModType Type { get; protected set; } = ModType.Fun;
+        public virtual ModType Type { get; } = ModType.Fun;
 
         /// <summary>
         ///     Mod的描述
