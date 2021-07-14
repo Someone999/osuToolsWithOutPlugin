@@ -127,11 +127,8 @@ namespace osuTools.Game.Mods
         /// </summary>
         /// <param name="mod"></param>
         /// <returns></returns>
-        public bool HasMod(Mod mod)
-        {
-            var comparer = new ModEqulityComparer();
-            return _mods.Contains(mod, comparer);
-        }
+        public bool HasMod(Type mod) => _mods.Any((m) => m.GetType() == mod);
+
         /// <summary>
         ///     列表中是否含有指定Mod
         /// </summary>
@@ -154,7 +151,7 @@ namespace osuTools.Game.Mods
         /// </summary>
         /// <param name="mod"></param>
         /// <returns></returns>
-        public bool Contains(Mod mod)
+        public bool Contains(Type mod)
         {
             return HasMod(mod);
         }

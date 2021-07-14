@@ -407,6 +407,7 @@
     <Compile Include="StoryBoard\Tools\StringProcessor.cs" />
     <Compile Include="StringStream.cs" />
     <Compile Include="ValueObserver.cs" />
+    <Compile Include="ValueTuple.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

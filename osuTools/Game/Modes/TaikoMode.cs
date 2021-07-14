@@ -64,12 +64,12 @@ namespace osuTools.Game.Modes
         {
             if (info is null) return GameRanking.Unknown;
             var noMiss = info.CountMiss == 0;
-            double All = info.Count300 + info.Count100 + info.Count50 + info.CountMiss;
-            var c100Rate = info.Count100 / All;
+            double all = info.Count300 + info.Count100 + info.Count50 + info.CountMiss;
+            var c100Rate = info.Count100 / all;
             var isHdOrFl = false;
             if (info.Mods.Count > 0)
-                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
-            if (Math.Abs(AccuracyCalc(info) * 100 - 100) < double.Epsilon && info.Count300 == (int)All)
+                isHdOrFl = info.Mods.Contains(typeof(HiddenMod)) || info.Mods.Contains(typeof(FlashlightMod));
+            if (Math.Abs(AccuracyCalc(info) * 100 - 100) < double.Epsilon && info.Count300 == (int)all)
             {
                 if (isHdOrFl) return GameRanking.SSH;
                 return GameRanking.SS;

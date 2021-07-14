@@ -44,7 +44,7 @@ namespace osuTools.Game.Modes
         {
             if (b is null) return 0;
             int hitObjCount = b.HitObjects.Count;
-            if (mods.Contains(new ScoreV2Mod()))
+            if (mods.Contains(typeof(ScoreV2Mod)))
                 hitObjCount += b.GetHitObjects<ManiaHold>().Count;
             return hitObjCount;
         }
@@ -78,7 +78,7 @@ namespace osuTools.Game.Modes
             if (info is null) return GameRanking.Unknown;
             bool isHdOrFl = false;
             if (info.Mods.Count > 0)
-                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
+                isHdOrFl = info.Mods.Contains(typeof(HiddenMod)) || info.Mods.Contains(typeof(FlashlightMod));
             return AccuracyCalc(info) * 100 >= 100 ? isHdOrFl ? GameRanking.SSH : GameRanking.SS :
                 AccuracyCalc(info) * 100 > 95 ? isHdOrFl ? GameRanking.SH : GameRanking.S :
                 AccuracyCalc(info) * 100 > 90 ? GameRanking.A :

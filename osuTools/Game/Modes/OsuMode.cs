@@ -76,7 +76,7 @@ namespace osuTools.Game.Modes
             var c50Rate = info.Count50 / all;
             var isHdOrFl = false;
             if (info.Mods.Count > 0)
-                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
+                isHdOrFl = info.Mods.Contains(typeof(HiddenMod)) || info.Mods.Contains(typeof(FlashlightMod));
             if (Math.Abs(AccuracyCalc(info) * 100 - 100) == 0 && Math.Abs(info.Count300 - all) == 0)
             {
                 if (isHdOrFl) return GameRanking.SSH;
