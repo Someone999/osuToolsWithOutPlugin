@@ -15,7 +15,7 @@ namespace osuTools.Game.Mods
     {
         private static IReadOnlyDictionary<OsuGameMod, Mod> _legacyMods;
         /// <summary>
-        /// <seealso cref="OsuGameMod"/>与<seealso cref="Mod"/>的键值对
+        /// <seealso cref="OsuGameMod"/>与<seealso cref="Mod"/>的键值对的列表
         /// </summary>
         public static IReadOnlyDictionary<OsuGameMod, Mod> LegacyMods
         {
@@ -66,7 +66,6 @@ namespace osuTools.Game.Mods
         ///     Taiko模式的可用Mod
         /// </summary>
         public static Mod[] TaikoMods { get; } = new Mod[] {new RelaxMod()}.Concat(GenericAvailableMods).ToArray();
-
         /// <summary>
         ///     Catch(CTB)模式的可用Mod
         /// </summary>
@@ -80,7 +79,11 @@ namespace osuTools.Game.Mods
             new FadeInMod(),
             new KeyMod(), new RandomMod(), new MirrorMod()
         }.Concat(GenericAvailableMods).ToArray();
-
+        /// <summary>
+        /// 开启了这个Mod后是否会失败
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool AllowsFail() => true;
         /// <summary>
         ///     Mod的名字
         /// </summary>
@@ -128,7 +131,7 @@ namespace osuTools.Game.Mods
         /// <returns></returns>
         public virtual bool CheckAndSetForMode(GameMode mode)
         {
-            if (mode.AvaliableMods.ToModList().HasMod(this))
+            if (mode.AvaliableMods.Contains(this))
                 return true;
             return false;
         }

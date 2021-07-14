@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -174,7 +175,7 @@ namespace osuTools.OnlineInfo.OsuApiV1.OnlineQueries
         /// <summary>
         ///     本次游玩中使用的Mods
         /// </summary>
-        public ModList Mods { get; } = new ModList();
+        public ModList Mods { get; }
 
         /// <summary>
         ///     谱面ID
@@ -195,13 +196,13 @@ namespace osuTools.OnlineInfo.OsuApiV1.OnlineQueries
         {
             var b = new StringBuilder(format);
             b.Replace("perfect", Perfect.ToString());
-            b.Replace("pp", Pp.ToString());
-            b.Replace("Count300g", C300G.ToString());
-            b.Replace("c300", C300.ToString());
-            b.Replace("Count200", C200.ToString());
-            b.Replace("Count100", C100.ToString());
-            b.Replace("Count50", C50.ToString());
-            b.Replace("CountMiss", CMiss.ToString());
+            b.Replace("pp", Pp.ToString(CultureInfo.InvariantCulture));
+            b.Replace("Count300g", CountGeki.ToString());
+            b.Replace("c300", Count300.ToString());
+            b.Replace("Count200", CountKatu.ToString());
+            b.Replace("Count100", Count100.ToString());
+            b.Replace("Count50", Count50.ToString());
+            b.Replace("CountMiss", CountMiss.ToString());
             b.Replace("userid", UserId.ToString());
             b.Replace("rank", Rank);
             b.Replace("playtime", _d.ToString("yyyy/MM/dd HH:mm:ss"));
@@ -225,7 +226,7 @@ namespace osuTools.OnlineInfo.OsuApiV1.OnlineQueries
         private double AccCalc(OsuGameMode mode)
         {
             return GameMode.FromLegacyMode(mode).AccuracyCalc(new ScoreInfo
-                {CountGeki = C300G, Count300 = C300, CountKatu = C200, Count100 = C100, Count50 = C50, CountMiss = CMiss});
+                {CountGeki = CountGeki, Count300 = Count300, CountKatu = CountKatu, Count100 = Count100, Count50 = Count50, CountMiss = CountMiss});
         }
 
         /// <summary>
@@ -234,9 +235,7 @@ namespace osuTools.OnlineInfo.OsuApiV1.OnlineQueries
         /// <returns></returns>
         public OnlineBeatmap GetOnlineBeatmap()
         {
-            var q = new OnlineBeatmapQuery();
-            q.OsuApiKey = QuerierApiKey;
-            q.BeatmapId = _beatmapId;
+            var q = new OnlineBeatmapQuery {OsuApiKey = QuerierApiKey, BeatmapId = _beatmapId};
             var beatmap = q.Beatmaps[0];
             return beatmap;
         }
@@ -247,9 +246,7 @@ namespace osuTools.OnlineInfo.OsuApiV1.OnlineQueries
         /// <returns></returns>
         public OnlineUser GetUser()
         {
-            var q = new OnlineUserQuery();
-            q.UserId = _userId;
-            q.OsuApiKey = QuerierApiKey;
+            var q = new OnlineUserQuery {UserId = _userId, OsuApiKey = QuerierApiKey};
             var user = q.UserInfo;
             return user;
         }

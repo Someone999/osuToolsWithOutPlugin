@@ -104,13 +104,15 @@
     <Compile Include="Beatmaps\HitObject\Taiko\TaikoBlueHit.cs" />
     <Compile Include="Beatmaps\HitObject\Taiko\TaikoRedHit.cs" />
     <Compile Include="Beatmaps\IBeatmap.cs" />
+    <Compile Include="Beatmaps\IHasPlayableAudio.cs" />
+    <Compile Include="Beatmaps\IHasPlayableVideo.cs" />
     <Compile Include="Beatmaps\Properties.cs" />
     <Compile Include="Beatmaps\TimePoint\TimePoint.cs" />
     <Compile Include="Beatmaps\TimePoint\TimePointCollection.cs" />
+    <Compile Include="Beatmaps\WithBeatmapFile.cs" />
     <Compile Include="Beatmaps\WithOnlineBeatmap.cs" />
     <Compile Include="Beatmaps\WIthOnlineBeatmapV2.cs" />
     <Compile Include="Beatmaps\WithOsuBeatmap.cs" />
-    <Compile Include="Beatmaps\WithString.cs" />
     <Compile Include="Collections\CloneableList.cs" />
     <Compile Include="Collections\CloneableObservableList.cs" />
     <Compile Include="Collections\ObservableList.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="GameInfo\KeyLayout\ModsKeyLayout.cs" />
     <Compile Include="GameInfo\KeyLayout\OsuKeyLayout.cs" />
     <Compile Include="GameInfo\KeyLayout\TaikoKeyLayout.cs" />
+    <Compile Include="GameInfo\ObsoletedOsuInfo.cs" />
     <Compile Include="GameInfo\OsuInfo.cs" />
     <Compile Include="Game\GameRanking.cs" />
     <Compile Include="Game\Modes\CatchMode.cs" />
@@ -148,7 +151,7 @@
     <Compile Include="Game\Modes\OsuGameModeTools.cs" />
     <Compile Include="Game\Modes\OsuMode.cs" />
     <Compile Include="Game\Modes\ScoreCalculators\ScoreCalculator.cs" />
-    <Compile Include="Game\ScoreInfo.cs" />
+    <Compile Include="Game\Modes\ScoreInfo.cs" />
     <Compile Include="Game\Modes\TaikoMode.cs" />
     <Compile Include="Game\Modes\UnknownMode.cs" />
     <Compile Include="Game\Mods\AutoPilotMod.cs" />
@@ -196,6 +199,7 @@
     <Compile Include="MD5Tools\MD5String.cs" />
     <Compile Include="MusicPlayer\IBassPlayer.cs" />
     <Compile Include="MusicPlayer\MediaInfo.cs" />
+    <Compile Include="MusicPlayer\MediaState.cs" />
     <Compile Include="MusicPlayer\Player.cs" />
     <Compile Include="MusicPlayer\PlayerException.cs" />
     <Compile Include="OnlineInfo\OsuApiV1\OnlineQueries\Beatmap.cs" />
@@ -269,9 +273,6 @@
     <Compile Include="Replays\AdditionalInfo\AdditionalRepalyData.cs" />
     <Compile Include="Replays\AdditionalInfo\LifeBarGraph.cs" />
     <Compile Include="Replays\AdditionalInfo\LifeBarGraphCollection.cs" />
-    <Compile Include="Replays\ex.cs" />
-    <Compile Include="Replays\Exception\FileInfoHasNoValue.cs" />
-    <Compile Include="Replays\Main.cs" />
     <Compile Include="Replays\Peoperties.cs" />
     <Compile Include="Replays\Replay.cs" />
     <Compile Include="Replays\ReplayCollection.cs" />
@@ -291,8 +292,8 @@
     <Compile Include="Skins\Color\TextColor.cs" />
     <Compile Include="Skins\Fonts\FontSetting.cs" />
     <Compile Include="Skins\Game\GeneralSkinImage.cs" />
+    <Compile Include="Skins\Game\GeneralSkinObjectCollection.cs" />
     <Compile Include="Skins\Game\GeneralSkinSound.cs" />
-    <Compile Include="Skins\Game\GenericSkinObjectCollection.cs" />
     <Compile Include="Skins\Game\Menu\MenuButton.cs" />
     <Compile Include="Skins\Game\Menu\MenuButtonImageCollection.cs" />
     <Compile Include="Skins\Game\Menu\ModeListOverlay.cs" />
@@ -404,15 +405,13 @@
     <Compile Include="StoryBoard\Tools\StoryBoardCommandString.cs" />
     <Compile Include="StoryBoard\Tools\StoryBoardTools.cs" />
     <Compile Include="StoryBoard\Tools\StringProcessor.cs" />
+    <Compile Include="StringStream.cs" />
     <Compile Include="ValueObserver.cs" />
-    <Compile Include="ValueTuple.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Skins\SkinParser\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

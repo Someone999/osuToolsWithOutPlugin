@@ -2,12 +2,23 @@
 
 namespace osuTools.Skins.Mania
 {
+    /// <summary>
+    /// Mania长条的样式，目前未发现用途
+    /// </summary>
     public enum HoldBodyStyle
     {
         /// <summary>
-        /// 延展
+        /// 延展(机器翻译)
         /// </summary>
-        Stretch = 1
+        Stretch = 1,
+        /// <summary>
+        /// 从顶部层叠(机器翻译)
+        /// </summary>
+        CascadeFromTop,
+        /// <summary>
+        /// 从底部层叠(机器翻译)
+        /// </summary>
+        CascadeFromDown
     }
     /// <summary>
     /// Mania皮肤的设置

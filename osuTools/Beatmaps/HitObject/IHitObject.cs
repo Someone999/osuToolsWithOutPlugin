@@ -1,5 +1,4 @@
 ﻿using osuTools.Beatmaps.HitObject.Sounds;
-using osuTools.Game.Interface;
 using osuTools.Game.Modes;
 
 namespace osuTools.Beatmaps.HitObject

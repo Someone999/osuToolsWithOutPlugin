@@ -14,10 +14,10 @@ namespace osuTools.OsuDB
     /// </summary>
     public class OsuBeatmapDB : IOsuDb
     {
-        private readonly string _f;
+        private readonly string f;
 
-        private readonly BinaryReader _reader;
-        private bool _readmanifest;
+        private readonly BinaryReader reader;
+        private bool readmanifest;
 
         /// <summary>
         ///     初始化一个OsuBeatmapDB对象
@@ -27,11 +27,11 @@ namespace osuTools.OsuDB
             var info = new OsuInfo();
             var file = info.OsuDirectory + "osu!.db";
             var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            _reader = new BinaryReader(stream);
+            reader = new BinaryReader(stream);
 
-            _f = file;
+            f = file;
             //System.Windows.Forms.MessageBox.Show(f);
-            Md5 = GetMd5();
+            MD5 = GetMD5();
             //Sync.Tools.IO.CurrentIO.Write(or.CurrentMode.ToString());
             try
             {
@@ -52,9 +52,9 @@ namespace osuTools.OsuDB
             if (!File.Exists(dbPath))
                 dbPath = Path.Combine(new OsuInfo().OsuDirectory, dbPath);
             var stream = File.Open(dbPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            _reader = new BinaryReader(stream);
-            _f = dbPath;
-            Md5 = GetMd5();
+            reader = new BinaryReader(stream);
+            f = dbPath;
+            MD5 = GetMD5();
             try
             {
                 Read();
@@ -77,7 +77,7 @@ namespace osuTools.OsuDB
         /// <summary>
         ///     osu!.db的MD5
         /// </summary>
-        public MD5String Md5 { get; internal set; }
+        public MD5String MD5 { get; internal set; }
 
         /// <summary>
         ///     手动从osu!.db读取信息，这将重新写入所有信息
@@ -86,65 +86,65 @@ namespace osuTools.OsuDB
         {
             Manifest = new OsuManifest();
             Beatmaps = new OsuBeatmapCollection();
-            if (!_readmanifest) ReadManifest();
+            if (!readmanifest) ReadManifest();
             GetAllBeatmaps();
         }
 
-        private MD5String GetMd5()
+        private MD5String GetMD5()
         {
             var provider = new MD5CryptoServiceProvider();
-            var data = File.ReadAllBytes(_f);
+            var data = File.ReadAllBytes(f);
             provider.ComputeHash(data);
             return new MD5String(provider);
         }
 
         private short GetInt16()
         {
-            var v = _reader.ReadInt16();
+            var v = reader.ReadInt16();
             return v;
         }
 
         private int GetInt32()
         {
-            var v = _reader.ReadInt32();
+            var v = reader.ReadInt32();
             return v;
         }
 
         private long GetInt64()
         {
-            var v = _reader.ReadInt64();
+            var v = reader.ReadInt64();
             return v;
         }
 
         private double GetDouble()
         {
-            var v = _reader.ReadDouble();
+            var v = reader.ReadDouble();
             return v;
         }
 
         private float GetSingle()
         {
-            var v = _reader.ReadSingle();
+            var v = reader.ReadSingle();
             return v;
         }
 
         private byte GetByte()
         {
-            var v = _reader.ReadByte();
+            var v = reader.ReadByte();
             return v;
         }
 
         private bool GetBoolean()
         {
-            var v = _reader.ReadBoolean();
+            var v = reader.ReadBoolean();
             return v;
         }
 
         private string GetString()
         {
-            if (_reader.ReadByte() == 0x0b)
+            if (reader.ReadByte() == 0x0b)
             {
-                var v = _reader.ReadString();
+                var v = reader.ReadString();
                 return v;
             }
 
@@ -159,7 +159,7 @@ namespace osuTools.OsuDB
             Manifest.AccountUnlockTime = new DateTime(GetInt64());
             Manifest.PlayerName = GetString();
             Manifest.NumberOfBeatmap = GetInt32();
-            _readmanifest = true;
+            readmanifest = true;
         }
 
         private OsuBeatmap ReadBeatmap()
@@ -168,16 +168,18 @@ namespace osuTools.OsuDB
             var taikostars = new Dictionary<int, double>();
             var ctbstars = new Dictionary<int, double>();
             var maniastars = new Dictionary<int, double>();
-            var beatmap = new OsuBeatmap();
-            beatmap.Artist = GetString();
-            beatmap.ArtistUnicode = GetString();
-            beatmap.Title = GetString();
-            beatmap.TitleUnicode = GetString();
-            beatmap.Creator = GetString();
-            beatmap.Difficulty = GetString();
-            beatmap.AudioFileName = GetString();
-            beatmap.Md5 = GetString();
-            beatmap.FileName = GetString();
+            var beatmap = new OsuBeatmap
+            {
+                Artist = GetString(),
+                ArtistUnicode = GetString(),
+                Title = GetString(),
+                TitleUnicode = GetString(),
+                Creator = GetString(),
+                Difficulty = GetString(),
+                AudioFileName = GetString(),
+                Md5 = GetString(),
+                FileName = GetString()
+            };
             try
             {
                 beatmap.BeatmapStatus = (OsuBeatmapStatus) Enum.Parse(typeof(OsuBeatmapStatus), GetByte().ToString());
@@ -315,7 +317,7 @@ namespace osuTools.OsuDB
             }
 
             Beatmaps = beatmaps;
-            _reader.Close();
+            reader.Close();
         }
     }
 }

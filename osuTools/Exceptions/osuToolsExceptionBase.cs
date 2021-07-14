@@ -3,7 +3,7 @@
 namespace osuTools.Exceptions
 {
     /// <summary>
-        ///     osuTools异常的基类
+        ///     osuTools异常的基类，osuTools及InfoReader的所有自定义异常均继承此类
         /// </summary>
         public class osuToolsExceptionBase : Exception
         {

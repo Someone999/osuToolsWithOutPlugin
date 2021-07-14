@@ -1,4 +1,5 @@
-﻿using osuTools.Beatmaps;
+﻿using System;
+using osuTools.Beatmaps;
 using osuTools.Beatmaps.HitObject;
 using osuTools.Beatmaps.HitObject.Mania;
 using osuTools.Exceptions;
@@ -39,24 +40,27 @@ namespace osuTools.Game.Modes
             return info.CountGeki + info.Count300 + info.CountKatu + info.Count100 + info.Count50 + info.CountMiss;
         }
         /// <inheritdoc/>
-        public override int GetBeatmapHitObjectCount(Beatmap b)
+        public override int GetBeatmapHitObjectCount(Beatmap b,ModList mods)
         {
             if (b is null) return 0;
-            return b.HitObjects.Count;
+            int hitObjCount = b.HitObjects.Count;
+            if (mods.Contains(new ScoreV2Mod()))
+                hitObjCount += b.GetHitObjects<ManiaHold>().Count;
+            return hitObjCount;
         }
         /// <inheritdoc/>
         public override double GetCountGekiRate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             var rawValue = info.CountGeki / (double) (info.Count300 + info.CountGeki);
             if (double.IsNaN(rawValue) || double.IsInfinity(rawValue))
-                return 0;
+                return 0d;
             return rawValue;
         }
         /// <inheritdoc/>
         public override double GetCount300Rate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             double rawValue;
             if (info.CountGeki > 0 && info.Count300 == 0)
                 rawValue = GetCountGekiRate(info);
@@ -64,16 +68,17 @@ namespace osuTools.Game.Modes
                 rawValue = (info.Count300 + info.CountGeki) /
                            (double) (info.CountGeki + info.Count300 + info.CountKatu + info.Count100 + info.Count50 + info.CountMiss);
             if (double.IsNaN(rawValue) || double.IsInfinity(rawValue))
-                return 0;
+                return 0d;
             return rawValue;
         }
+
         /// <inheritdoc/>
         public override GameRanking GetRanking(ScoreInfo info)
         {
             if (info is null) return GameRanking.Unknown;
             bool isHdOrFl = false;
-            if (!string.IsNullOrEmpty(info.Mods.GetShortModsString()))
-                isHdOrFl = info.Mods.GetShortModsString().Contains("HD") || info.Mods.GetShortModsString().Contains("FL");
+            if (info.Mods.Count > 0)
+                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
             return AccuracyCalc(info) * 100 >= 100 ? isHdOrFl ? GameRanking.SSH : GameRanking.SS :
                 AccuracyCalc(info) * 100 > 95 ? isHdOrFl ? GameRanking.SH : GameRanking.S :
                 AccuracyCalc(info) * 100 > 90 ? GameRanking.A :

@@ -5,6 +5,7 @@ using osuTools.Beatmaps.HitObject;
 using osuTools.Beatmaps.HitObject.Catch;
 using osuTools.Exceptions;
 using osuTools.Game.Mods;
+using osuTools.PerformanceCalculator.Catch;
 
 namespace osuTools.Game.Modes
 {
@@ -19,9 +20,16 @@ namespace osuTools.Game.Modes
         public override Mod[] AvaliableMods => Mod.CatchMods;
         ///<inheritdoc/>
         public override string Description => "接水果";
+        private CatchBeatmap _innerBeatmap;
+        private CatchPerformanceCalculator _performanceCalculator;
 
-
-        ///<inheritdoc/>
+        internal double TestPerformanceCalculator(ScoreInfo info,Beatmap b)
+        {
+            _innerBeatmap = _innerBeatmap ?? new CatchBeatmap(b);
+            _performanceCalculator =
+                _performanceCalculator ?? new CatchPerformanceCalculator(_innerBeatmap, info.Mods);
+            return _performanceCalculator.CalculatePerformance(AccuracyCalc(info), info.MaxCombo, info.CountMiss);
+        }
        
         ///<inheritdoc/>
         public OsuGameMode LegacyMode => OsuGameMode.Catch;
@@ -36,9 +44,9 @@ namespace osuTools.Game.Modes
             var rawValue = (c300 + c100 + c50) / (c300 + c100 + c200 + c50 + cMiss);
             return double.IsNaN(rawValue) ? 0 : double.IsInfinity(rawValue) ? 0 : rawValue;
         }
-
+       
         ///<inheritdoc/>
-        public override int GetBeatmapHitObjectCount(Beatmap b)
+        public override int GetBeatmapHitObjectCount(Beatmap b, ModList mods)
         {
             if (b == null) return 0;
             var hitObjects = b.HitObjects;
@@ -60,13 +68,13 @@ namespace osuTools.Game.Modes
         ///<inheritdoc/>
         public override double GetCount300Rate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             return AccuracyCalc(info);
         }
         ///<inheritdoc/>
         public override double GetCountGekiRate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             return AccuracyCalc(info);
         }
         ///<inheritdoc/>
@@ -90,8 +98,8 @@ namespace osuTools.Game.Modes
         {
             if (info is null) return GameRanking.Unknown;
             var isHdOrFl = false;
-            if (!string.IsNullOrEmpty(info.Mods.GetShortModsString()))
-                isHdOrFl = info.Mods.GetShortModsString().Contains("HD") || info.Mods.GetShortModsString().Contains("FL");
+            if (info.Mods.Count > 0)
+                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
             if (Math.Abs(AccuracyCalc(info) * 100 - 100) == 0)
             {
 
@@ -127,5 +135,13 @@ namespace osuTools.Game.Modes
 
             return GameRanking.Unknown;
         }
+       
+        /// <inheritdoc/>
+        public override int GetBeatmapMaxCombo(ScoreInfo info, Beatmap b) =>
+            _performanceCalculator.Beatmap.MaxCombo;
+        ///<inheritdoc/>
+        public override double GetHitObjectPercent(ScoreInfo info, Beatmap b) =>
+            GetPassedHitObjectCount(info) / (double)GetBeatmapMaxCombo(info, b);
+
     }
 }

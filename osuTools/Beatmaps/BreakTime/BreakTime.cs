@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using osuTools.Game.Interface;
 
 namespace osuTools.Beatmaps.BreakTime
 {

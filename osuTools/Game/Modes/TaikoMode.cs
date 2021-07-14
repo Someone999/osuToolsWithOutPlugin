@@ -21,6 +21,7 @@ namespace osuTools.Game.Modes
         public override Mod[] AvaliableMods => Mod.TaikoMods;
         ///<inheritdoc/>
         public override string Description => "打鼓";
+       
         ///<inheritdoc/>
         public OsuGameMode LegacyMode => OsuGameMode.Taiko;
         ///<inheritdoc/>
@@ -32,13 +33,14 @@ namespace osuTools.Game.Modes
             var rawValue = (c300 + c100 * 0.5d) / (c300 + c100 + cMiss);
             return double.IsNaN(rawValue) ? 0 : double.IsInfinity(rawValue) ? 0 : rawValue;
         }
+      
         ///<inheritdoc/>
         public override bool IsPerfect(ScoreInfo info)
         {
             return info.CountMiss <= 0;
         }
         ///<inheritdoc/>
-        public override int GetBeatmapHitObjectCount(Beatmap b)
+        public override int GetBeatmapHitObjectCount(Beatmap b,ModList mods)
         {
             if (b is null) return 0;
             var hitObjects = b.HitObjects;
@@ -48,13 +50,13 @@ namespace osuTools.Game.Modes
         /// <inheritdoc/>
         public override double GetCountGekiRate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             return GetCount300Rate(info);
         }
         ///<inheritdoc/>
         public override double GetCount300Rate(ScoreInfo info)
         {
-            if (info is null) return 0;
+            if (info is null) return 0d;
             return (double) info.Count300 / (info.Count300 + info.Count100 + info.CountMiss);
         }
         ///<inheritdoc/>
@@ -65,8 +67,8 @@ namespace osuTools.Game.Modes
             double All = info.Count300 + info.Count100 + info.Count50 + info.CountMiss;
             var c100Rate = info.Count100 / All;
             var isHdOrFl = false;
-            if (!string.IsNullOrEmpty(info.Mods.GetShortModsString()))
-                isHdOrFl = info.Mods.GetShortModsString().Contains("HD") || info.Mods.GetShortModsString().Contains("FL");
+            if (info.Mods.Count > 0)
+                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
             if (Math.Abs(AccuracyCalc(info) * 100 - 100) < double.Epsilon && info.Count300 == (int)All)
             {
                 if (isHdOrFl) return GameRanking.SSH;

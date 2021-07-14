@@ -5,11 +5,11 @@
     /// </summary>
     public class OsuBeatmapTimePoint
     {
-        internal OsuBeatmapTimePoint(double bpm, double offset, bool uninherit)
+        internal OsuBeatmapTimePoint(double bpm, double offset, bool inherit)
         {
             Bpm = 1 / bpm * 1000 * 60;
             Offset = offset;
-            Uninherit = uninherit;
+            Inherit = inherit;
         }
 
         /// <summary>
@@ -23,8 +23,8 @@
         public double Offset { get; internal set; }
 
         /// <summary>
-        ///     是否为非继承时间线(是不是红线)
+        ///     是否为继承时间线(是不是绿线)
         /// </summary>
-        public bool Uninherit { get; internal set; }
+        public bool Inherit { get; internal set; }
     }
 }

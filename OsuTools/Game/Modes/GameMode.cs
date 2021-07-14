@@ -14,7 +14,6 @@ namespace osuTools.Game.Modes
     /// </summary>
     public abstract class GameMode : IEqualityComparer<GameMode>
     {
-
         /// <summary>
         /// 存储<seealso cref="OsuGameMode"/>和<seealso cref="GameMode"/>的字典
         /// </summary>
@@ -22,10 +21,10 @@ namespace osuTools.Game.Modes
         {
             get
             {
-                if (_legacyGameModes is null)
+                if(_legacyGameModes is null)
                 {
                     Dictionary<OsuGameMode, GameMode> legacyModes = new Dictionary<OsuGameMode, GameMode>();
-                    Assembly asm = typeof(Mod).Assembly;
+                    Assembly asm = typeof(GameMode).Assembly;
                     var types = asm.GetTypes();
                     foreach (var type in types)
                     {
@@ -45,6 +44,7 @@ namespace osuTools.Game.Modes
         }
 
         private static IReadOnlyDictionary<OsuGameMode, GameMode> _legacyGameModes;
+
         /// <summary>
         ///     模式的名字
         /// </summary>
@@ -68,8 +68,12 @@ namespace osuTools.Game.Modes
         /// <returns></returns>
         public bool Equals(GameMode a, GameMode b)
         {
-            if (a is ILegacyMode && b is ILegacyMode)
-                return ((ILegacyMode) a).LegacyMode == ((ILegacyMode) b).LegacyMode;
+            if (a is null && b is null)
+                return true;
+            if (a is null || b is null)
+                return false;
+            if (a is ILegacyMode mode && b is ILegacyMode legacyMode)
+                return mode.LegacyMode == legacyMode.LegacyMode;
             return a.ModeName == b.ModeName;
         }
 
@@ -80,8 +84,8 @@ namespace osuTools.Game.Modes
         /// <returns></returns>
         public int GetHashCode(GameMode a)
         {
-            if (a is ILegacyMode)
-                return (int) (a as ILegacyMode).LegacyMode;
+            if (a is ILegacyMode mode)
+                return (int) mode.LegacyMode;
             return a.ModeName.GetHashCode();
         }
 
@@ -105,7 +109,6 @@ namespace osuTools.Game.Modes
         {
             throw new NotImplementedException($"模式{ModeName}不使用这个方法创建HitObject");
         }
-
 
         /// <summary>
         ///     这个模式的准度计算方法
@@ -168,7 +171,7 @@ namespace osuTools.Game.Modes
         /// <returns></returns>
         public static GameMode FromLegacyMode(OsuGameMode legacyMode)
         {
-            if (_legacyGameModes.ContainsKey(legacyMode))
+            if (LegacyModes.ContainsKey(legacyMode))
                 return LegacyModes[legacyMode];
             return new UnknownMode();
         }
@@ -200,8 +203,9 @@ namespace osuTools.Game.Modes
         ///     获取谱面的HitObject数量
         /// </summary>
         /// <param name="b"></param>
+        /// <param name="mods"></param>
         /// <returns></returns>
-        public virtual int GetBeatmapHitObjectCount(Beatmap b)
+        public virtual int GetBeatmapHitObjectCount(Beatmap b,ModList mods)
         {
             return 0;
         }
@@ -253,7 +257,6 @@ namespace osuTools.Game.Modes
         public virtual double GetCount300Rate(ScoreInfo info)
         {
             return 0;
-            
         }
 
         /// <summary>
@@ -265,5 +268,20 @@ namespace osuTools.Game.Modes
         {
             return GameRanking.Unknown;
         }
+        /// <summary>
+        /// 获取当前谱面的最大连击
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public virtual int GetBeatmapMaxCombo(ScoreInfo info,Beatmap b) => b.HitObjects.Count;
+        /// <summary>
+        /// 获取游戏中出现过的HitObject在总HitObject中的占比
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public virtual double GetHitObjectPercent(ScoreInfo info,Beatmap b) =>
+            GetPassedHitObjectCount(info) / (double)GetBeatmapHitObjectCount(b, info.Mods);
     }
 }

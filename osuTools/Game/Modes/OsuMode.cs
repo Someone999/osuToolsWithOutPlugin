@@ -23,6 +23,17 @@ namespace osuTools.Game.Modes
         public OsuGameMode LegacyMode => OsuGameMode.Osu;
         /// <inheritdoc/>
 
+        public override double AccuracyCalc(ScoreInfo scoreInfo)
+        {
+            double c300 = scoreInfo.Count300;
+            double c100 = scoreInfo.Count100;
+            double c50 = scoreInfo.Count50;
+            double cMiss = scoreInfo.CountMiss;
+            var rawValue = (c300 + c100 * (1 / 3d) + c50 * (1 / 6d)) / (c300 + c100 + c50 + cMiss);
+            return double.IsNaN(rawValue) ? 0 : double.IsInfinity(rawValue) ? 0 : rawValue;
+        }
+        /// <inheritdoc/>
+
         public override IHitObject CreateHitObject(string data)
         {
             IHitObject hitobject = null;
@@ -40,7 +51,7 @@ namespace osuTools.Game.Modes
             return hitobject;
         }
         /// <inheritdoc/>
-        public override int GetBeatmapHitObjectCount(Beatmap b)
+        public override int GetBeatmapHitObjectCount(Beatmap b,ModList mods)
         {
             return b?.HitObjects.Count ?? 0;
         }
@@ -55,17 +66,6 @@ namespace osuTools.Game.Modes
             return !(info is null) && info.PlayerMaxCombo == info.MaxCombo;
         }
         /// <inheritdoc/>
-        public override double AccuracyCalc(ScoreInfo ortdpInfo)
-        {
-            if (ortdpInfo is null) return 0;
-            double c300 = ortdpInfo.Count300;
-            double c100 = ortdpInfo.Count100;
-            double c50 = ortdpInfo.Count50;
-            double cMiss = ortdpInfo.CountMiss;
-            var rawValue = (c300 + c100 * (1 / 3d) + c50 * (1 / 6d)) / (c300 + c100 + c50 + cMiss);
-            return double.IsNaN(rawValue) ? 0 : double.IsInfinity(rawValue) ? 0 : rawValue;
-        }
-        /// <inheritdoc/>
         public override GameRanking GetRanking(ScoreInfo info)
         {
             if (info is null) return GameRanking.Unknown;
@@ -75,8 +75,8 @@ namespace osuTools.Game.Modes
             var c100Rate = info.Count100 / all;
             var c50Rate = info.Count50 / all;
             var isHdOrFl = false;
-            if (!string.IsNullOrEmpty(info.Mods.GetShortModsString()))
-                isHdOrFl = info.Mods.GetShortModsString().Contains("HD") || info.Mods.GetShortModsString().Contains("FL");
+            if (info.Mods.Count > 0)
+                isHdOrFl = info.Mods.Contains(new HiddenMod()) || info.Mods.Contains(new FlashlightMod());
             if (Math.Abs(AccuracyCalc(info) * 100 - 100) == 0 && Math.Abs(info.Count300 - all) == 0)
             {
                 if (isHdOrFl) return GameRanking.SSH;
@@ -112,7 +112,7 @@ namespace osuTools.Game.Modes
         {
             var rawValue = info.CountGeki / (double) (info.CountGeki + info.CountKatu);
             if (double.IsNaN(rawValue) || double.IsInfinity(rawValue))
-                return 0;
+                return 0d;
             return rawValue;
         }
         /// <inheritdoc/>
@@ -120,7 +120,7 @@ namespace osuTools.Game.Modes
         {
             var rawValue = info.Count300 / (double) (info.Count300 + info.Count100 + info.Count50 + info.CountMiss);
             if (double.IsNaN(rawValue) || double.IsInfinity(rawValue))
-                return 0;
+                return 0d;
             return rawValue;
         }
     }

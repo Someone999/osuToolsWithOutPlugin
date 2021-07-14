@@ -273,7 +273,8 @@ namespace osuTools.OnlineInfo.OsuApiV2.ResultClasses
         {
             return $"{Artist} - {Title}";
         }
-		/// <summary>
+
+        /// <summary>
         /// 从互联网加载预览音频
         /// </summary>
         /// <returns></returns>
