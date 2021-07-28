@@ -348,6 +348,7 @@ namespace osuTools.Game.Mods
             CalcScoreMul();
             CalcTimeRate();
             GetAllowsFail();
+            IsModsRanked();
         }
 
         /// <summary>
